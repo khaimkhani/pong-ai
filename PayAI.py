@@ -5,16 +5,17 @@ import math
 class PayAI:
 
     def __init__(self):
-        self.brain = NeuralNetwork(4, 4, 3, 3, None)
+        self.brain = NeuralNetwork(6, 4, 4, 3, None)
         self.fitness = 0
 
     def think(self, info):
         outs = self.brain.query(info)
-        if max(outs) == outs[0]:
+        num = random.uniform(0, 1)
+        if num <= outs[0]:
             #go up
             return 'UP'
 
-        elif max(outs) == outs[1]:
+        elif outs[0] < num <= outs[0] + outs[1]:
             return 'DOWN'
         else:
             return 'STAY'

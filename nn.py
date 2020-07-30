@@ -34,10 +34,12 @@ class NeuralNetwork:
         self.W_ho = numpy.random.normal(0, pow(self.o, -.5), (self.o, self.h2 + 1))
 
     def train(self, inputs, targets):
-        inputs.append(self.bias)
+        ins = inputs.copy()
+        ins = self.norm_ins(ins)
+        ins.append(self.bias)
         target = numpy.array(targets, ndmin=2).T
-        inputs = numpy.array(inputs, ndmin=2).T
-        h1_ins = numpy.dot(self.W_ih, inputs)
+        ins = numpy.array(ins, ndmin=2).T
+        h1_ins = numpy.dot(self.W_ih, ins)
 
         h1_outs_nb = self.activation(h1_ins) #activation of hidden layer 1 with no bias node obviously duhhh.
 
@@ -65,9 +67,12 @@ class NeuralNetwork:
 
 
     def query(self, inputs_list):
-        inputs_list.append(self.bias)
-        inputs = numpy.array(inputs_list, ndmin=2).T
-        hidden1_inputs = numpy.dot(self.W_ih, inputs)
+
+        ins = inputs_list.copy()
+        ins = self.norm_ins(ins)
+        ins.append(self.bias)
+        ins = numpy.array(ins, ndmin=2).T
+        hidden1_inputs = numpy.dot(self.W_ih, ins)
         hidden1_outputs = self.activation(hidden1_inputs)
         hidden1_outputs = numpy.insert(hidden1_outputs, hidden1_outputs.size, 1, 0)
         hidden2_inputs = numpy.dot(self.W_hh, hidden1_outputs)
@@ -75,7 +80,17 @@ class NeuralNetwork:
         hidden2_outputs = numpy.insert(hidden2_outputs, hidden2_outputs.size, 1, 0)
         output_inputs = numpy.dot(self.W_ho, hidden2_outputs)
         outputs = self.activation(output_inputs)
-        return outputs
+        return self.norm_outs(outputs)
+
+    def norm_outs(self, outs):
+        for i in range(len(outs)):
+            outs[i] = outs[i] / sum(outs)
+        return outs
+
+    def norm_ins(self, ins):
+        for i in range(len(ins)):
+            ins[i] = ins[i] / sum(ins)
+        return ins
 
     def activation(self, x):
         return scipy.special.expit(x)
