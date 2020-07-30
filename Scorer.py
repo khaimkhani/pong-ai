@@ -38,3 +38,12 @@ class Score:
             return False 
         else:
             return True
+
+    def checkDeath(self, ballxpos, ball, width, height, framerate):
+        if ballxpos < 0:
+            ball.xpos = width / 2
+            ball.ypos = height / 2
+            ball.xspeed = self.randomNumber(2, 3)
+            ball.yspeed = self.randomNumber(3, 5)
+            ball.pause = 2 * framerate
+            return True
