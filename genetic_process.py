@@ -6,7 +6,7 @@ class Genes:
 
     def __init__(self, population):
         self.size = population
-        self.inital_size = population
+        self.initial_size = population
         self.popu = []
         self.old = []
         self.old_fit = []
@@ -24,15 +24,26 @@ class Genes:
     def new_gen(self):
 
         n1 = self.old.pop(self.old_fit.index(max(self.old_fit)))
+        self.old_fit[self.old_fit.index(max(self.old_fit))] = 0
         n2 = self.old.pop(self.old_fit.index(max(self.old_fit)))
+        self.old_fit[self.old_fit.index(max(self.old_fit))] = 0
+
         self.old_fit.clear()
-        self.old.clear()
+
+        self.old = []
+
         for i in range(self.initial_size):
-            newthang = crossover(n1, n2)
+            newthang = crossover(n1.brain, n2.brain)
             newthang.brain.mutate()
-            self.popu.append(newthang)
+            thang = PayAI()
+            thang.brain = newthang
+            self.popu.append(thang)
+        self.size = self.inital_size
+
 
 def crossover(n1, n2):
+
+
     child = NeuralNetwork(n1.i, n1.h1, n1.h2, n1.o, n1.lr)
     layer_pointers_n1 = [n1.W_ih.copy(), n1.W_hh.copy(), n1.W_ho.copy()]
     layer_pointers_n2 = [n2.W_ih.copy(), n2.W_hh.copy(), n2.W_ho.copy()]

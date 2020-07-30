@@ -101,7 +101,7 @@ def drawGen(gen=None):
     textrect.center = (850, 560)
     DISPLAYSURF.blit(text, textrect)
 
-generation = Genes(8)
+generation = Genes(2)
 
 # Game Loop
 while True:
@@ -148,7 +148,7 @@ while True:
             k = pygame.key.get_pressed()
             #paddle1.move(paddle1.ypos, k, paddle1.number)
             paddle2.AI_move(paddle2.ypos, bott.think(info), paddle2.number)
-            print(bott.brain.query(info))
+            print(bott.think(info))
             paddle2.move(paddle2.ypos, k, paddle2.number)
             pongball.move(pongball.xpos, pongball.ypos, pongball.xspeed, pongball.yspeed, paddle2, paddle1)
 
