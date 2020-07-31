@@ -32,13 +32,15 @@ class Genes:
         self.old.clear()
 
         for i in range(self.initial_size):
-            newthang = crossover(n1.brain, n2.brain)
+            if random.uniform(0, 1) < 0.5:
+                newthang = crossover(n1.brain, n2.brain)
+            else:
+                newthang = n1
             newthang.mutate(self.mutation_rate)
             thang = PayAI()
             thang.brain = newthang
             self.popu.append(thang)
         self.size = self.initial_size
-
 
 def crossover(n1, n2):
 

@@ -101,7 +101,7 @@ def drawGen(gen=None):
     textrect.center = (850, 560)
     DISPLAYSURF.blit(text, textrect)
 
-generation = Genes(2, 0.1)
+generation = Genes(20, 0.1)
 
 # Game Loop
 while True:
@@ -116,11 +116,7 @@ while True:
         drawMaxFit()
         drawMaxFit(max(generation.old_fit))
     print("loop ran")
-    if generation.size == 0:
-        generation.new_gen()
-        drawGen()
-        gen += 1
-        drawGen(gen)
+
     while True and generation.size > 0:
 
         bott = generation.offering()
@@ -162,6 +158,9 @@ while True:
                 bott.set_fitness(round((end - start) * 10))
                 if generation.size == 0:
                     generation.new_gen()
+                    drawGen()
+                    gen += 1
+                    drawGen(gen)
                 bott = generation.offering()
                 start = time.time()
                 drawChild()
