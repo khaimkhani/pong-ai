@@ -115,28 +115,22 @@ while True:
     else:
         drawMaxFit()
         drawMaxFit(max(generation.old_fit))
-
-    while True:
-        if generation.size == 0:
-            generation.new_gen()
-            drawGen()
-            gen += 1
-            drawGen(gen)
+    print("loop ran")
+    if generation.size == 0:
+        generation.new_gen()
+        drawGen()
+        gen += 1
+        drawGen(gen)
+    while True and generation.size > 0:
 
         bott = generation.offering()
 
         while running:
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    total = time.time() - start
-                    bott.set_fitness(total)
-                    bott = generation.offering()
                     pygame.quit()
-                    # pygame.quit()
-                    # sys.exit()
-                    # pygame.font.init()
-                    # running = True
-                    # limit = 1
+                    sys.exit()
+
             x_dist = pongball.xpos - paddle2.xpos
             y_dist = pongball.ypos - paddle2.ypos
 
@@ -148,7 +142,7 @@ while True:
             k = pygame.key.get_pressed()
             #paddle1.move(paddle1.ypos, k, paddle1.number)
             paddle2.AI_move(paddle2.ypos, bott.think(info), paddle2.number)
-            print(bott.think(info))
+            #print(bott.think(info))
             paddle2.move(paddle2.ypos, k, paddle2.number)
             pongball.move(pongball.xpos, pongball.ypos, pongball.xspeed, pongball.yspeed, paddle2, paddle1)
 
@@ -166,6 +160,8 @@ while True:
             if scorer.checkDeath(pongball.xpos, pongball, SCREEN_WIDTH, SCREEN_HEIGHT, FRAMERATE):
                 deaths += 1
                 bott.set_fitness(round((end - start) * 10))
+                if generation.size == 0:
+                    generation.new_gen()
                 bott = generation.offering()
                 start = time.time()
                 drawChild()
