@@ -23,14 +23,12 @@ class Genes:
 
     def new_gen(self):
 
-        n1 = self.old.pop(self.old_fit.index(max(self.old_fit)))
+        n1 = self.old[self.old_fit.index(max(self.old_fit))]
         self.old_fit[self.old_fit.index(max(self.old_fit))] = 0
-        n2 = self.old.pop(self.old_fit.index(max(self.old_fit)))
-        self.old_fit[self.old_fit.index(max(self.old_fit))] = 0
+        n2 = self.old[self.old_fit.index(max(self.old_fit))]
 
         self.old_fit.clear()
-
-        self.old = []
+        self.old.clear()
 
         for i in range(self.initial_size):
             newthang = crossover(n1.brain, n2.brain)
