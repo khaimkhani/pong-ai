@@ -34,11 +34,11 @@ class Genes:
 
         for i in range(self.initial_size):
             newthang = crossover(n1.brain, n2.brain)
-            newthang.brain.mutate()
+            newthang.mutate()
             thang = PayAI()
             thang.brain = newthang
             self.popu.append(thang)
-        self.size = self.inital_size
+        self.size = self.initial_size
 
 
 def crossover(n1, n2):
