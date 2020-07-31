@@ -97,18 +97,21 @@ class NeuralNetwork:
 
     def mutate(self, rate):
 
-        for i in self.W_ih:
-            for j in i:
+        for i in range(len(self.W_ih)):
+            for j in range(len(self.W_ih[i])):
                 if random.uniform(0, 1) < rate:
                     self.W_ih[i][j] = random.uniform(-1, 1)
-        for i in self.W_hh:
-            for j in i:
+
+        for i in range(len(self.W_hh)):
+            for j in range(len(self.W_hh[i])):
                 if random.uniform(0, 1) < rate:
                     self.W_ih[i][j] = random.uniform(-1, 1)
-        for i in self.W_ho:
-            for j in i:
+
+        for i in range(len(self.W_ho)):
+            for j in range(len(self.W_ho[i])):
                 if random.uniform(0, 1) < rate:
                     self.W_ih[i][j] = random.uniform(-1, 1)
+
 
 
 

@@ -101,7 +101,7 @@ def drawGen(gen=None):
     textrect.center = (850, 560)
     DISPLAYSURF.blit(text, textrect)
 
-generation = Genes(2)
+generation = Genes(2, 0.1)
 
 # Game Loop
 while True:

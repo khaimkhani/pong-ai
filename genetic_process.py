@@ -4,12 +4,13 @@ from PayAI import *
 
 class Genes:
 
-    def __init__(self, population):
+    def __init__(self, population, mr):
         self.size = population
         self.initial_size = population
         self.popu = []
         self.old = []
         self.old_fit = []
+        self.mutation_rate = mr
         for i in range(self.size):
             self.popu.append(PayAI())
 
@@ -23,16 +24,16 @@ class Genes:
 
     def new_gen(self):
 
-        n1 = self.old[self.old_fit.index(max(self.old_fit))]
-        self.old_fit[self.old_fit.index(max(self.old_fit))] = 0
-        n2 = self.old[self.old_fit.index(max(self.old_fit))]
+        n1 = self.old.pop(self.old_fit.index(max(self.old_fit)))
+        self.old_fit.remove(max(self.old_fit))
+        n2 = self.old.pop(self.old_fit.index(max(self.old_fit)))
 
         self.old_fit.clear()
         self.old.clear()
 
         for i in range(self.initial_size):
             newthang = crossover(n1.brain, n2.brain)
-            newthang.mutate()
+            newthang.mutate(self.mutation_rate)
             thang = PayAI()
             thang.brain = newthang
             self.popu.append(thang)
@@ -40,7 +41,6 @@ class Genes:
 
 
 def crossover(n1, n2):
-
 
     child = NeuralNetwork(n1.i, n1.h1, n1.h2, n1.o, n1.lr)
     layer_pointers_n1 = [n1.W_ih.copy(), n1.W_hh.copy(), n1.W_ho.copy()]
