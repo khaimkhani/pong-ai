@@ -35,7 +35,7 @@ class Genes:
             if random.uniform(0, 1) < 0.5:
                 newthang = crossover(n1.brain, n2.brain)
             else:
-                newthang = n1
+                newthang = n1.brain
             newthang.mutate(self.mutation_rate)
             thang = PayAI()
             thang.brain = newthang

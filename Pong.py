@@ -101,104 +101,97 @@ def drawGen(gen=None):
     textrect.center = (850, 560)
     DISPLAYSURF.blit(text, textrect)
 
-generation = Genes(20, 0.1)
 
-# Game Loop
+
+# Game  and Genetic Loop
+
+generation = Genes(25, 0.1)
+start = time.time()
+deaths = 0
+gen = 1
+
 while True:
 
-    start = time.time()
-    deaths = 0
-    gen = 0
-    if len(generation.old_fit) == 0:
-        drawMaxFit()
-        drawMaxFit(0)
-    else:
-        drawMaxFit()
-        drawMaxFit(max(generation.old_fit))
-    print("loop ran")
+    bott = generation.offering()
 
-    while True and generation.size > 0:
+    while running:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
 
-        bott = generation.offering()
-
-        while running:
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    pygame.quit()
-                    sys.exit()
-
-            x_dist = pongball.xpos - paddle2.xpos
-            y_dist = pongball.ypos - paddle2.ypos
+        x_dist = pongball.xpos - paddle2.xpos
+        y_dist = pongball.ypos - paddle2.ypos
 
 
 
-            info = [x_dist, y_dist, pongball.xspeed, pongball.yspeed, paddle2.ypos, paddle2.xpos]
-            # Checking Variables
+        info = [x_dist, y_dist, pongball.xspeed, pongball.yspeed, paddle2.ypos, paddle2.xpos]
+        # Checking Variables
 
-            k = pygame.key.get_pressed()
-            #paddle1.move(paddle1.ypos, k, paddle1.number)
-            paddle2.AI_move(paddle2.ypos, bott.think(info), paddle2.number)
-            #print(bott.think(info))
-            paddle2.move(paddle2.ypos, k, paddle2.number)
-            pongball.move(pongball.xpos, pongball.ypos, pongball.xspeed, pongball.yspeed, paddle2, paddle1)
+        k = pygame.key.get_pressed()
+        #paddle1.move(paddle1.ypos, k, paddle1.number)
+        paddle2.AI_move(paddle2.ypos, bott.think(info), paddle2.number)
+        #print(bott.think(info))
+        paddle2.move(paddle2.ypos, k, paddle2.number)
+        pongball.move(pongball.xpos, pongball.ypos, pongball.xspeed, pongball.yspeed, paddle2, paddle1)
 
-            # Drawing screen
-            DISPLAYSURF.blit(BG, (0, 0))
-            end = time.time()
-            drawFitness(round((end - start) * 10))
+        # Drawing screen
+        DISPLAYSURF.blit(BG, (0, 0))
+        end = time.time()
+        drawFitness(round((end - start) * 10))
+        drawChild(deaths)
+        # Draw ball and paddles
+        drawBall(pongball.xpos, pongball.ypos, pongball.size)
+        drawPaddle(paddle1.xpos, paddle1.ypos, paddle1.width, paddle1.length)
+        drawPaddle(paddle2.xpos, paddle2.ypos, paddle2.width, paddle2.length)
+
+        #check death
+        if scorer.checkDeath(pongball.xpos, pongball, SCREEN_WIDTH, SCREEN_HEIGHT, FRAMERATE):
+            deaths += 1
+            bott.set_fitness(round((end - start) * 10))
+            if generation.size == 0:
+                generation.new_gen()
+                drawGen()
+                gen += 1
+                drawGen(gen)
+            bott = generation.offering()
+            start = time.time()
+            drawChild()
             drawChild(deaths)
-            # Draw ball and paddles
-            drawBall(pongball.xpos, pongball.ypos, pongball.size)
-            drawPaddle(paddle1.xpos, paddle1.ypos, paddle1.width, paddle1.length)
-            drawPaddle(paddle2.xpos, paddle2.ypos, paddle2.width, paddle2.length)
+            drawFitness()
 
-            #check death
-            if scorer.checkDeath(pongball.xpos, pongball, SCREEN_WIDTH, SCREEN_HEIGHT, FRAMERATE):
-                deaths += 1
-                bott.set_fitness(round((end - start) * 10))
-                if generation.size == 0:
-                    generation.new_gen()
-                    drawGen()
-                    gen += 1
-                    drawGen(gen)
-                bott = generation.offering()
-                start = time.time()
-                drawChild()
-                drawChild(deaths)
-                drawFitness()
+        # Check for a point
+        #scorer.checkPoint(pongball.xpos, pongball, SCREEN_WIDTH, SCREEN_HEIGHT, FRAMERATE)
 
-            # Check for a point
-            #scorer.checkPoint(pongball.xpos, pongball, SCREEN_WIDTH, SCREEN_HEIGHT, FRAMERATE)
+        #scorer.printScore(scorer.player1score, scorer.player2score)
+        # running = scorer.checkWin(scorer.player1score, scorer.player2score, limit)
 
-            #scorer.printScore(scorer.player1score, scorer.player2score)
-            # running = scorer.checkWin(scorer.player1score, scorer.player2score, limit)
+        # Update display and tick clock.
+        pygame.display.update()
+        pygame.display.flip()
+        clock.tick(FRAMERATE)
 
-            # Update display and tick clock.
+    # WIP: Trying to implement a game over screen with "Play again" and "Quit"
+    while not running:
+
+        # Print box for "Play Again"
+        # pygame.draw.rect(DISPLAYSURF, (0,204,0), (100,375,200,150))
+        # Print box for "Exit"
+        # pygame.draw.rect(DISPLAYSURF, (204,0,0), (480,375,200,150))
+        if scorer.player1score == limit:
+            string = "Player 1 wins!"
+            winText = FONT.render(string, True, (255, 255, 255))
+            DISPLAYSURF.blit(winText, (100, 200))
             pygame.display.update()
-            pygame.display.flip()
-            clock.tick(FRAMERATE)
 
-        # WIP: Trying to implement a game over screen with "Play again" and "Quit"
-        while not running:
+        else:
+            string = "Player 2 wins!"
+            winText = FONT.render(string, True, (255, 255, 255))
+            DISPLAYSURF.blit(winText, (500, 200))
+            pygame.display.update()
 
-            # Print box for "Play Again"
-            # pygame.draw.rect(DISPLAYSURF, (0,204,0), (100,375,200,150))
-            # Print box for "Exit"
-            # pygame.draw.rect(DISPLAYSURF, (204,0,0), (480,375,200,150))
-            if scorer.player1score == limit:
-                string = "Player 1 wins!"
-                winText = FONT.render(string, True, (255, 255, 255))
-                DISPLAYSURF.blit(winText, (100, 200))
-                pygame.display.update()
+        # Update display and tick clock.
 
-            else:
-                string = "Player 2 wins!"
-                winText = FONT.render(string, True, (255, 255, 255))
-                DISPLAYSURF.blit(winText, (500, 200))
-                pygame.display.update()
-
-            # Update display and tick clock.
-
-            pygame.display.flip()
-            clock.tick(FRAMERATE)
+        pygame.display.flip()
+        clock.tick(FRAMERATE)
 
