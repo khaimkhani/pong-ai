@@ -10,15 +10,11 @@ class PayAI:
 
     def think(self, info):
         outs = self.brain.query(info)
-        num = random.uniform(0, 1)
-        if num <= outs[0]:
-            #go up
-            return 'UP'
-
-        elif outs[0] < num <= outs[0] + outs[1]:
-            return 'DOWN'
-        else:
-            return 'STAY'
+        ol = []
+        for i in outs[0]:
+            ol.append(i)
+        actions = ['UP', 'DOWN', 'STAY']
+        return actions[ol.index(max(ol))]
 
     def set_fitness(self, fit):
         self.fitness = fit
