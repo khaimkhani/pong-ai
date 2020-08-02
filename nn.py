@@ -23,7 +23,7 @@ class NeuralNetwork:
         :param lr:
         :type lr:
         """
-        self.bias = 1
+        self.bias = 0
         self.i = inp
         self.h1 = hid1
         self.h2 = hid2
@@ -35,7 +35,7 @@ class NeuralNetwork:
 
     def train(self, inputs, targets):
         ins = inputs.copy()
-        ins = self.norm_ins(ins)
+        ins = self.norm(ins)
         ins.append(self.bias)
         target = numpy.array(targets, ndmin=2).T
         ins = numpy.array(ins, ndmin=2).T
@@ -69,7 +69,7 @@ class NeuralNetwork:
     def query(self, inputs_list):
 
         ins = inputs_list.copy()
-        ins = self.norm_ins(ins)
+        ins = self.norm(ins)
         ins.append(self.bias)
         ins = numpy.array(ins, ndmin=2).T
         hidden1_inputs = numpy.dot(self.W_ih, ins)
@@ -80,17 +80,15 @@ class NeuralNetwork:
         hidden2_outputs = numpy.insert(hidden2_outputs, hidden2_outputs.size, 1, 0)
         output_inputs = numpy.dot(self.W_ho, hidden2_outputs)
         outputs = self.activation(output_inputs)
-        return self.norm_outs(outputs)
+        return self.norm(outputs)
 
-    def norm_outs(self, outs):
+    def norm(self, outs):
+        x = sum(outs)
         for i in range(len(outs)):
-            outs[i] = outs[i] / sum(outs)
+            outs[i] = outs[i] / x
         return outs
 
-    def norm_ins(self, ins):
-        for i in range(len(ins)):
-            ins[i] = ins[i] / sum(ins)
-        return ins
+
 
     def activation(self, x):
         return scipy.special.expit(x)

@@ -17,25 +17,33 @@ class Genes:
     def offering(self):
 
         child = self.popu.pop(0)
-        self.old.append(child)
-        self.old_fit.append(child.fitness)
+        #self.old.append(child)
+        #self.old_fit.append(child.fitness)
         self.size -= 1
         return child
 
+    def pickBestFitnessInd(self):
+        fitsum = sum(self.old_fit)
+        ind = 0
+        r = random.uniform(0, 1)
+        while r > 0:
+            r -= self.old_fit[ind] / fitsum
+            ind += 1
+        ind -= 1
+        return ind
+
     def new_gen(self):
 
-        n1 = self.old.pop(self.old_fit.index(max(self.old_fit)))
-        self.old_fit.remove(max(self.old_fit))
-        n2 = self.old.pop(self.old_fit.index(max(self.old_fit)))
+        n1 = self.old[self.pickBestFitnessInd()].brain
+        n2 = self.old[self.pickBestFitnessInd()].brain
 
         self.old_fit.clear()
         self.old.clear()
 
         for i in range(self.initial_size):
-            if random.uniform(0, 1) < 0.5:
-                newthang = crossover(n1.brain, n2.brain)
-            else:
-                newthang = n1.brain
+
+            newthang = crossover(n1, n2)
+
             newthang.mutate(self.mutation_rate)
             thang = PayAI()
             thang.brain = newthang

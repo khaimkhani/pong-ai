@@ -33,7 +33,7 @@ clock = pygame.time.Clock()
 scorer = Score()
 
 # Create the Paddles(x,y,length,width,speed,playernumber).
-paddle2 = Paddle(20, 10, 100, 20, 10, 2)
+paddle2 = Paddle(20, 320, 100, 20, 10, 2)
 paddle1 = Paddle(740, 10, 720, 20, 10, 1)
 
 # Spawn the Ball(x, y, xspeed, yspeed, size) at a random speed and direction.
@@ -105,7 +105,7 @@ def drawGen(gen=None):
 
 # Game  and Genetic Loop
 
-generation = Genes(25, 0.1)
+generation = Genes(35, 0.15)
 start = time.time()
 deaths = 0
 gen = 1
@@ -125,13 +125,13 @@ while True:
 
 
 
-        info = [x_dist, y_dist, pongball.xspeed, pongball.yspeed, paddle2.ypos, paddle2.xpos]
+        info = [x_dist, y_dist, paddle2.ypos, paddle2.xpos]
         # Checking Variables
 
         k = pygame.key.get_pressed()
         #paddle1.move(paddle1.ypos, k, paddle1.number)
         paddle2.AI_move(paddle2.ypos, bott.think(info), paddle2.number)
-        #print(bott.think(info))
+        print(bott.brain.query(info))
         paddle2.move(paddle2.ypos, k, paddle2.number)
         pongball.move(pongball.xpos, pongball.ypos, pongball.xspeed, pongball.yspeed, paddle2, paddle1)
 
@@ -149,6 +149,8 @@ while True:
         if scorer.checkDeath(pongball.xpos, pongball, SCREEN_WIDTH, SCREEN_HEIGHT, FRAMERATE):
             deaths += 1
             bott.set_fitness(round((end - start) * 10))
+            generation.old.append(bott)
+            generation.old_fit.append(bott.fitness)
             if generation.size == 0:
                 generation.new_gen()
                 drawGen()
@@ -159,6 +161,7 @@ while True:
             drawChild()
             drawChild(deaths)
             drawFitness()
+            paddle2.ypos = 320
 
         # Check for a point
         #scorer.checkPoint(pongball.xpos, pongball, SCREEN_WIDTH, SCREEN_HEIGHT, FRAMERATE)
